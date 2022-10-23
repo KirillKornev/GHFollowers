@@ -17,14 +17,15 @@ class FollowerListVC: UIViewController {
         view.backgroundColor = .systemBackground
         navigationController?.navigationBar.prefersLargeTitles = true
 
-        NetworkManager.shared.getFollowers(for: userName ?? "", page: 1) { followers, error in
-            guard let followers = followers else {
-                self.presentGFAlertOnMainThred(title: "bad stuff happened", message: error ?? "", buttonTitle: "Ok")
-                return
+        NetworkManager.shared.getFollowers(for: userName ?? "", page: 1) { result in
+            switch result {
+            case .success(let followers):
+                print(followers.count)
+            case .failure(let error):
+                self.presentGFAlertOnMainThred(title: "bad stuff happened", message: error.rawValue , buttonTitle: "Ok")
             }
         }
     }
-
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
