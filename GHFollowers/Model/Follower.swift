@@ -11,3 +11,10 @@ struct Follower: Codable {
     let login: String
     let avatarUrl: String
 }
+
+extension Follower: Hashable {
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(login)
+    }
+}
