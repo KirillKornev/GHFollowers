@@ -12,21 +12,6 @@ class FollowerListVC: UIViewController {
     var userName: String? = ""
     private(set) var followers: [Follower] = []
 
-    private lazy var flowLayout: UICollectionViewLayout = {
-        let layout = UICollectionViewFlowLayout()
-        let width = view.bounds.width
-        let padding: CGFloat = 12
-        let minimumItemSpacing: CGFloat = 10
-        let availableWidth = width - (padding * 2) - (minimumItemSpacing * 2)
-        let itemWidth = availableWidth / 3
-
-        layout.sectionInset = UIEdgeInsets(top: padding, left: padding, bottom: padding, right: padding)
-        layout.itemSize = CGSize(width: itemWidth, height: itemWidth + 40)
-
-
-        return layout
-    }()
-
     private lazy var dataSource: UICollectionViewDiffableDataSource<Section, Item> = {
         UICollectionViewDiffableDataSource<Section, Item>(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
             switch itemIdentifier {
@@ -44,7 +29,7 @@ class FollowerListVC: UIViewController {
     }()
 
     private lazy var collectionView: UICollectionView = {
-        let collection = UICollectionView(frame: view.bounds, collectionViewLayout: flowLayout)
+        let collection = UICollectionView(frame: view.bounds, collectionViewLayout: UIHelper.flowLayout(in: view))
         collection.backgroundColor = .systemBackground
         collection.register(FollowerCell.self, forCellWithReuseIdentifier: FollowerCell.reuseId)
 
@@ -77,14 +62,14 @@ class FollowerListVC: UIViewController {
     }
 
     private func fetchFollowers() {
-        NetworkManager.shared.getFollowers(for: userName ?? "", page: 1) { result in
+        NetworkManager.shared.getFollowers(for: userName ?? "", page: 1) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let followers):
                     let items: [Item] = followers.map { .follower($0) }
-                    self.updateData(with: items)
+                    self?.updateData(with: items)
                 case .failure(let error):
-                    self.presentAlert(title: "Bad stuff happened", message: error.rawValue , buttonTitle: "Ok")
+                    self?.presentAlert(title: "Bad stuff happened", message: error.rawValue , buttonTitle: "Ok")
                 }
             }
         }
