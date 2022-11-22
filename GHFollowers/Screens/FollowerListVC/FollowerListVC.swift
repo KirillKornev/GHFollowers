@@ -11,6 +11,8 @@ class FollowerListVC: UIViewController {
 
     var userName: String? = ""
     private(set) var followers: [Follower] = []
+    private var page = 1
+    private var hasMoreFollowers = true
 
     private lazy var dataSource: UICollectionViewDiffableDataSource<Section, Item> = {
         UICollectionViewDiffableDataSource<Section, Item>(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
@@ -31,6 +33,7 @@ class FollowerListVC: UIViewController {
     private lazy var collectionView: UICollectionView = {
         let collection = UICollectionView(frame: view.bounds, collectionViewLayout: UIHelper.flowLayout(in: view))
         collection.backgroundColor = .systemBackground
+        collection.delegate = self
         collection.register(FollowerCell.self, forCellWithReuseIdentifier: FollowerCell.reuseId)
 
         return collection
@@ -41,7 +44,7 @@ class FollowerListVC: UIViewController {
 
         setupUI()
         setupCollection()
-        fetchFollowers()
+        fetchFollowers(page: page)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -61,13 +64,18 @@ class FollowerListVC: UIViewController {
         view.addSubview(collectionView)
     }
 
-    private func fetchFollowers() {
-        NetworkManager.shared.getFollowers(for: userName ?? "", page: 1) { [weak self] result in
+    private func fetchFollowers(page: Int) {
+        showLoadingView()
+        NetworkManager.shared.getFollowers(for: userName ?? "", page: page) { [weak self] result in
             DispatchQueue.main.async {
+                self?.dismissLoadingView()
+
                 switch result {
                 case .success(let followers):
-                    let items: [Item] = followers.map { .follower($0) }
-                    self?.updateData(with: items)
+                    if followers.count < 100 { self?.hasMoreFollowers = false }
+
+                    self?.followers.append(contentsOf: followers)
+                    self?.updateData()
                 case .failure(let error):
                     self?.presentAlert(title: "Bad stuff happened", message: error.rawValue , buttonTitle: "Ok")
                 }
@@ -75,10 +83,28 @@ class FollowerListVC: UIViewController {
         }
     }
 
-    private func updateData(with items: [Item]) {
+    private func updateData() {
+        let items: [Item] = followers.map { .follower($0) }
+
         var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
         snapshot.appendSections([.main])
         snapshot.appendItems(items)
         dataSource.apply(snapshot, animatingDifferences: true)
+    }
+}
+
+// MARK: - UICollectionViewDelegate
+
+extension FollowerListVC: UICollectionViewDelegate {
+
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        let offset = scrollView.contentOffset.y
+        let contentHeight = scrollView.contentSize.height
+        let height = scrollView.frame.height
+
+        if offset > contentHeight - height, hasMoreFollowers {
+            page += 1
+            fetchFollowers(page: page)
+        }
     }
 }

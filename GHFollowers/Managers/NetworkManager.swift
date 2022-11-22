@@ -5,7 +5,7 @@
 //  Created by Kirill Kornev on 22.10.2022.
 //
 
-import Foundation
+import UIKit
 
 private extension String {
     static let baseUrl = "https://api.github.com/users/"
@@ -13,6 +13,7 @@ private extension String {
 
 final class NetworkManager {
     static let shared = NetworkManager()
+    let cache = NSCache<NSString, UIImage>()
 
     private init() {}
 
