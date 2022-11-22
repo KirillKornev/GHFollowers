@@ -11,6 +11,7 @@ class FollowerListVC: UIViewController {
 
     var userName: String? = ""
     private(set) var followers: [Follower] = []
+    private var filteredFolloers: [Follower] = []
     private var page = 1
     private var hasMoreFollowers = true
 
@@ -44,6 +45,7 @@ class FollowerListVC: UIViewController {
 
         setupUI()
         setupCollection()
+        configureSearchController()
         fetchFollowers(page: page)
     }
 
@@ -81,7 +83,7 @@ class FollowerListVC: UIViewController {
                         self.showEmptyStateView(with: message, in: self.view)
                         return
                     }
-                    self.updateData()
+                    self.updateData(on: self.followers)
                 case .failure(let error):
                     self.presentAlert(title: "Bad stuff happened", message: error.rawValue , buttonTitle: "Ok")
                 }
@@ -89,13 +91,21 @@ class FollowerListVC: UIViewController {
         }
     }
 
-    private func updateData() {
+    private func updateData(on followers: [Follower]) {
         let items: [Item] = followers.map { .follower($0) }
 
         var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
         snapshot.appendSections([.main])
         snapshot.appendItems(items)
         dataSource.apply(snapshot, animatingDifferences: true)
+    }
+
+    private func configureSearchController() {
+        let searchController = UISearchController()
+        searchController.searchResultsUpdater = self
+        searchController.searchBar.delegate = self
+        searchController.searchBar.placeholder = "Search for user name"
+        navigationItem.searchController = searchController
     }
 }
 
@@ -112,5 +122,26 @@ extension FollowerListVC: UICollectionViewDelegate {
             page += 1
             fetchFollowers(page: page)
         }
+    }
+}
+
+// MARK: - UISearchResultsUpdating
+
+extension FollowerListVC: UISearchResultsUpdating {
+
+    func updateSearchResults(for searchController: UISearchController) {
+        guard let filter = searchController.searchBar.text, !filter.isEmpty else { return }
+
+        filteredFolloers = followers.filter({ $0.login.lowercased().contains(filter.lowercased()) })
+        updateData(on: filteredFolloers)
+    }
+}
+
+// MARK: - UISearchControllerDelegate
+
+extension FollowerListVC: UISearchBarDelegate {
+
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        updateData(on: followers)
     }
 }
