@@ -49,8 +49,8 @@ final class GFEmptyStateView: UIView {
 
             logoView.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 1.3),
             logoView.heightAnchor.constraint(equalTo: self.widthAnchor, multiplier: 1.3),
-            logoView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: 200),
-            logoView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 140)
+            logoView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: 170),
+            logoView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 60)
         ])
     }
 }
