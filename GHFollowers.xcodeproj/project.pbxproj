@@ -69,6 +69,53 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		356016EA292D5F87004AD5C7 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				35A8D6C529052E5500BD266C /* GFAvatarImageVIew.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		356016EB292D5F8D004AD5C7 /* Buttons */ = {
+			isa = PBXGroup;
+			children = (
+				35A8D6A32904146500BD266C /* GFButton.swift */,
+			);
+			path = Buttons;
+			sourceTree = "<group>";
+		};
+		356016EC292D5F95004AD5C7 /* TextFields */ = {
+			isa = PBXGroup;
+			children = (
+				35A8D6A5290416A400BD266C /* GFTextField.swift */,
+			);
+			path = TextFields;
+			sourceTree = "<group>";
+		};
+		356016ED292D5FA0004AD5C7 /* ImageViews */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ImageViews;
+			sourceTree = "<group>";
+		};
+		356016EE292D5FA9004AD5C7 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		356016EF292D5FDC004AD5C7 /* Labels */ = {
+			isa = PBXGroup;
+			children = (
+				35A8D6AD290445CE00BD266C /* GFBodyLabel.swift */,
+				35A8D6AB290443D700BD266C /* GFTitleLabel.swift */,
+			);
+			path = Labels;
+			sourceTree = "<group>";
+		};
 		35A8D67F2904051300BD266C = {
 			isa = PBXGroup;
 			children = (
@@ -113,12 +160,13 @@
 		35A8D6B42904503900BD266C /* CustomViews */ = {
 			isa = PBXGroup;
 			children = (
+				356016EF292D5FDC004AD5C7 /* Labels */,
+				356016EE292D5FA9004AD5C7 /* ViewControllers */,
+				356016ED292D5FA0004AD5C7 /* ImageViews */,
+				356016EC292D5F95004AD5C7 /* TextFields */,
+				356016EB292D5F8D004AD5C7 /* Buttons */,
+				356016EA292D5F87004AD5C7 /* Views */,
 				35A8D6C229052DAC00BD266C /* Cells */,
-				35A8D6A5290416A400BD266C /* GFTextField.swift */,
-				35A8D6AD290445CE00BD266C /* GFBodyLabel.swift */,
-				35A8D6AB290443D700BD266C /* GFTitleLabel.swift */,
-				35A8D6A32904146500BD266C /* GFButton.swift */,
-				35A8D6C529052E5500BD266C /* GFAvatarImageVIew.swift */,
 			);
 			path = CustomViews;
 			sourceTree = "<group>";
